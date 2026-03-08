@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoldClick Technologies | Premium Website Improvements for Law Firms</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0B1F3B; /* Navy */
+            --secondary: #FFFFFF;
+            --neutral: #F5F7FA;
+            --accent: #C9A24A; /* Soft Gold */
+            --text-dark: #1A1A1A;
+            --text-light: #666666;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--secondary);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .nav-logo {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- Utility Classes --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #b38f3d;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(201, 162, 74, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 25px 0;
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 15px 0;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        nav.scrolled .nav-logo, nav.scrolled .nav-link {
+            color: var(--primary);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            z-index: 1001;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        /* Hamburger Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 2px;
+            background: white;
+            transition: var(--transition);
+        }
+
+        nav.scrolled .menu-toggle span {
+            background: var(--primary);
+        }
+
+        /* --- Hero Section --- */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #0B1F3B 0%, #162E50 100%);
+            color: white;
+            overflow: hidden;
+            padding: 120px 0;
+        }
+
+        .glow-shape {
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(201, 162, 74, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 850px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .hero-content p {
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            opacity: 0.8;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* --- Problem Section --- */
+        #problem {
+            background-color: var(--neutral);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .problem-list {
+            list-style: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .problem-item {
+            background: white;
+            padding: 25px 40px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border-left: 4px solid var(--accent);
+        }
+
+        .problem-item svg {
+            margin-right: 20px;
+            color: #e74c3c;
+            flex-shrink: 0;
+            display: block; /* Ensure visibility */
+        }
+
+        /* --- Solution Section --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            border: 1px solid #eee;
+            transition: var(--transition);
+            text-align: left;
+            opacity: 1; /* Fallback if JS fails */
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            border-color: var(--accent);
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: var(--neutral);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            color: var(--accent);
+        }
+
+        /* --- Improvement Example --- */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .comp-card {
+            padding: 40px;
+            border-radius: 15px;
+        }
+
+        .comp-before {
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+        }
+
+        .comp-after {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 20px 40px rgba(11, 31, 59, 0.2);
+        }
+
+        .comp-tag {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .comp-list {
+            list-style: none;
+            margin-top: 25px;
+        }
+
+        .comp-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+
+        .comp-after .comp-list li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- Process Section --- */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .process-card {
+            padding: 40px 30px;
+            border-radius: 8px;
+            background: var(--neutral);
+            position: relative;
+        }
+
+        .process-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--accent);
+            opacity: 0.3;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+
+        /* --- Insights --- */
+        #insights {
+            background: var(--primary);
+            color: white;
+        }
+
+        #insights h2 { color: white; }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        /* --- About Section --- */
+        .about-flex {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+        }
+
+        .about-text { flex: 1; }
+        .about-image {
+            flex: 1;
+            background: #ddd;
+            min-height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Form Section --- */
+        #review { background: var(--neutral); }
+
+        .review-form {
+            background: white;
+            padding: clamp(30px, 5vw, 60px);
+            border-radius: 15px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #050d18;
+            color: white;
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+
+        /* --- Mobile Responsive Fixes --- */
+        @media (max-width: 992px) {
+            .container { padding: 0 25px; }
+            .about-flex { flex-direction: column; gap: 40px; }
+            .comparison-container { grid-template-columns: 1fr; }
+            
+            .menu-toggle { display: flex; }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: var(--primary);
+                flex-direction: column;
+                justify-content: center;
+                transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+                padding: 40px;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-link {
+                font-size: 1.5rem;
+                color: white;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .problem-item { padding: 20px; }
+            section { padding: 80px 0; }
+            .hero-actions { flex-direction: column; width: 100%; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Navigation -->
+    <nav id="navbar">
+        <div class="container nav-content">
+            <a href="#" class="nav-logo">BoldClick Technologies</a>
+            
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="nav-links" id="nav-list">
+                <a href="#solutions" class="nav-link">Solutions</a>
+                <a href="#process" class="nav-link">Process</a>
+                <a href="#insights" class="nav-link">Insights</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#review" class="nav-link nav-cta">Free Website Review</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="glow-shape" id="glow1"></div>
+        <div class="glow-shape" id="glow2" style="right: 0; bottom: 0;"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 id="hero-title">Helping Law Firms Turn Website Visitors Into Client Consultations</h1>
+                <p id="hero-sub">Modern, credible websites designed to build trust and make it easier for potential clients to contact your firm.</p>
+                <div class="hero-actions" id="hero-btns">
+                    <a href="#review" class="btn btn-primary">Get a Free Website Review</a>
+                    <a href="#solutions" class="btn btn-secondary">View Website Improvements</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <!-- <section id="problem">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Many Law Firm Websites Lose Potential Clients</h2>
+                <p>Outdated websites weaken trust and reduce client inquiries. In a high-stakes industry, your digital presence is your primary handshake.</p>
+            </div>
+            <div class="problem-list">
+                <div class="problem-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Outdated design that weakens credibility</span>
+                </div>
+                <div class="problem-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Visitors struggle to find how to contact the firm</span>
+                </div>
+                <div class="problem-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Poor mobile experience for people searching on phones</span>
+                </div>
+                <div class="problem-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Lack of clear consultation calls-to-action</span>
+                </div>
+                <div class="problem-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span>Slow pages that frustrate visitors</span>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Solution Section -->
+    <section id="solutions">
+        <div class="container">
+            <div class="section-header">
+                <h2>How BoldClick Helps Law Firms</h2>
+                <p>At BoldClick Technologies, we focus on website improvements that directly impact credibility and client inquiries.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="icon-box">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    </div>
+                    <h3>Modern Design</h3>
+                    <p>Professional aesthetics tailored for high-end law practices.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                    </div>
+                    <h3>Conversion Focused</h3>
+                    <p>Strategically structured to turn silent readers into active leads.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    </div>
+                    <h3>Mobile Optimized</h3>
+                    <p>Flawless performance on devices, where most searches begin.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+                    </div>
+                    <h3>Call-to-Actions</h3>
+                    <p>Strategic placements that encourage immediate consultation.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    </div>
+                    <h3>Performance & SEO</h3>
+                    <p>Improved speed and search visibility to keep you competitive.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Example Section -->
+    <section id="example">
+        <div class="container">
+            <div class="section-header">
+                <h2>Example Website Improvement</h2>
+            </div>
+            <div class="comparison-container">
+                <div class="comp-card comp-before">
+                    <span class="comp-tag">Before</span>
+                    <h3>The Outdated Standard</h3>
+                    <ul class="comp-list">
+                        <li>Cluttered layout and overwhelming text</li>
+                        <li>Outdated typography from a decade ago</li>
+                        <li>Hidden contact information</li>
+                    </ul>
+                </div>
+                <div class="comp-card comp-after">
+                    <span class="comp-tag" style="color: var(--accent);">After</span>
+                    <h3>The BoldClick Standard</h3>
+                    <ul class="comp-list">
+                        <li>Modern, clean and spacious design</li>
+                        <li>Clear "Request Consultation" buttons</li>
+                        <li>Mobile-friendly structure throughout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Website Improvement Process</h2>
+            </div>
+            <div class="process-grid">
+                <div class="process-card">
+                    <span class="process-num">01</span>
+                    <h3>Website Review</h3>
+                    <p>We analyze the website and identify credibility issues affecting your brand.</p>
+                </div>
+                <div class="process-card">
+                    <span class="process-num">02</span>
+                    <h3>Strategy & Design</h3>
+                    <p>We redesign the structure to guide visitors toward consultation.</p>
+                </div>
+                <div class="process-card">
+                    <span class="process-num">03</span>
+                    <h3>Development</h3>
+                    <p>The improved website is built for high performance and mobile response.</p>
+                </div>
+                <div class="process-card">
+                    <span class="process-num">04</span>
+                    <h3>Launch</h3>
+                    <p>Your firm's new digital face goes live to the public.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Building Section -->
+    <section id="insights">
+        <div class="container">
+            <div class="section-header">
+                <h2>Website Insights for Law Firms</h2>
+            </div>
+            <div class="services-grid">
+                <div class="insight-card">
+                    <h3>The 5-Second Rule</h3>
+                    <p>Most law firm visitors decide within 5 seconds whether the firm feels trustworthy based on aesthetics alone.</p>
+                </div>
+                <div class="insight-card">
+                    <h3>Mobile First Search</h3>
+                    <p>Mobile searches now account for the majority of people looking for legal help in the UK.</p>
+                </div>
+                <div class="insight-card">
+                    <h3>Strategic Friction</h3>
+                    <p>Clear consultation calls-to-action significantly increase client inquiries by removing navigation friction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="about-flex">
+                <div class="about-text">
+                    <h2>About BoldClick Technologies</h2>
+                    <p style="margin-bottom: 20px;">BoldClick Technologies helps professional service firms improve their online presence through modern, high-credibility websites.</p>
+                    <p>Founded by <strong>Franklyn Chisom</strong>, the company focuses on helping law firms present themselves more effectively online and convert more website visitors into consultations.</p>
+                </div>
+                <div class="about-image">
+                    <svg viewBox="0 0 400 500" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="500" fill="#f0f0f0"/>
+                        <circle cx="200" cy="200" r="60" fill="#ccc"/>
+                        <path d="M100 420c0-60 45-100 100-100s100 40 100 100v30H100v-30z" fill="#ccc"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Free Website Review Section -->
+    <section id="review">
+        <div class="container">
+            <div class="section-header">
+                <h2>Request a Free Law Firm Website Review</h2>
+                <p>Curious whether your website could be improved? I'd be happy to review your current site and share a few practical suggestions.</p>
+            </div>
+            <div class="review-form">
+                <form id="contact-form" onsubmit="event.preventDefault(); alert('Review Request Received. We will be in touch shortly.');">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="e.g. James Sterling" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Law Firm</label>
+                            <input type="text" placeholder="Firm Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Website URL</label>
+                            <input type="url" placeholder="https://www.yourfirm.co.uk" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="email@firm.com" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Request Website Review</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-logo">BoldClick Technologies</div>
+            <p style="color: var(--accent); font-size: 0.9rem; margin-bottom: 40px;">Founder: Franklyn Chisom</p>
+            <p style="opacity: 0.7;">Specialized Website Improvements for Law Firms</p>
+            <div class="copyright">
+                © 2026 BoldClick Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-list');
+        const links = document.querySelectorAll('.nav-link');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            // Animate hamburger to X
+            const spans = menuToggle.querySelectorAll('span');
+            spans[0].style.transform = navLinks.classList.contains('active') ? 'rotate(45deg) translate(6px, 6px)' : 'none';
+            spans[1].style.opacity = navLinks.classList.contains('active') ? '0' : '1';
+            spans[2].style.transform = navLinks.classList.contains('active') ? 'rotate(-45deg) translate(5px, -5px)' : 'none';
+        });
+
+        // Close menu on link click
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const spans = menuToggle.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
+
+        // Navigation Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    gsap.to(window, {
+                        duration: 1.2,
+                        scrollTo: target,
+                        ease: "power3.inOut"
+                    });
+                }
+            });
+        });
+
+        // Hero Animations
+        window.onload = () => {
+            const tl = gsap.timeline();
+            tl.from("#hero-title", { y: 50, opacity: 0, duration: 1, ease: "power4.out" })
+              .from("#hero-sub", { y: 30, opacity: 0, duration: 0.8, ease: "power3.out" }, "-=0.6")
+              .from("#hero-btns", { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" }, "-=0.6");
+
+            // Glow Animation
+            gsap.to("#glow1", { x: "5vw", y: "5vh", duration: 10, repeat: -1, yoyo: true, ease: "sine.inOut" });
+            gsap.to("#glow2", { x: "-5vw", y: "-5vh", duration: 8, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        };
+
+        // Section Reveals - Adjusted for Mobile Reliability
+        const animatedSections = document.querySelectorAll('section:not(#hero)');
+        animatedSections.forEach(section => {
+            const inner = section.querySelector('.container');
+            if (inner) {
+                gsap.from(inner, {
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 85%", // Trigger earlier for mobile
+                        toggleActions: "play none none none"
+                    },
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+            }
+        });
+
+        // Problem Items Stagger
+        gsap.from(".problem-item", {
+            scrollTrigger: {
+                trigger: ".problem-list",
+                start: "top 80%"
+            },
+            x: -20,
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power1.out"
+        });
+
+        // Service Cards Stagger - Ensuring they load
+        gsap.from(".service-card", {
+            scrollTrigger: {
+                trigger: ".services-grid",
+                start: "top 85%"
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power2.out",
+            clearProps: "all" // Clear props after animation to prevent layout issues
+        });
+
+        // Process Cards
+        gsap.from(".process-card", {
+            scrollTrigger: {
+                trigger: ".process-grid",
+                start: "top 80%"
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.7,
+            stagger: 0.2,
+            ease: "power2.out"
+        });
+
+    </script>
+</body>
+</html>
